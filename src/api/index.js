@@ -43,7 +43,7 @@ export default ({ config, db }) => {
   api.post("/filesStore", (req, res, next) => {
     //take task from req and insert into task table
     const form = formidable({ multiples: true });
-    console.log("body", req.body);
+    // console.log("body", req.body);
     let fileRes;
 
     form.parse(req, asyncHandler(async (err, fields, files) => {
@@ -52,7 +52,7 @@ export default ({ config, db }) => {
         return;
       }
       // res.json({ fields, files });
-      console.log('#fields', fields, '#files', files);
+      // console.log('#fields', fields, '#files', files);
 
       fileRes = await uploadFile(files);
       res.json({ fileRes: fileRes });

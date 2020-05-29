@@ -4,7 +4,7 @@ var firebase = require("firebase");
 var admin = require("firebase-admin");
 
 // Add the Firebase services that you want to use
-require("firebase/firestore");
+require("firebase/storage");
 const { Storage } = require('@google-cloud/storage');
 
 // Firebase Configuration
@@ -22,12 +22,12 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
-var serviceAccount = require("./fir-bucket-test-firebase-adminsdk-v3ulx-98991ca61b.json");
+// var serviceAccount = require("./fir-bucket-test-firebase-adminsdk-v3ulx-98991ca61b.json");
 
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    databaseURL: "fir-bucket-test.appspot.com"
-});
+// admin.initializeApp({
+//     credential: admin.credential.cert(serviceAccount),
+//     databaseURL: "fir-bucket-test.appspot.com"
+// });
 
 // Get a reference to the storage service, which is used to create references in your storage bucket
 var storage = firebase.storage();
@@ -41,14 +41,27 @@ export const uploadFile = async (files = {}) => {
 
     let fileUploadedArray = [];
     for (const file in files) {
-        console.log('#file', file, files[file]);
+        // console.log('#file', file, files[file]);
         let storageRef = storage.ref(`ams_docs/${files[file].name}`);
 
+
         // Upload files
-        const task = await storageRef.put(files[file]);
+        try {
+            console.log('#1', files[file] instanceof Blob);
+            const task = await storageRef.put(files[file]);
+        } catch (e) {
+            console.log("Error: ", e);
+        }
+
         let errorObj, completeFlag, url;
 
+        console.log('#2');
+
         task.on('state_changed',
+            function progress(snapshot) {
+                let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                console.log(percentage);
+            },
             function error(err) {
                 console.log(err);
                 errorObj = err;
