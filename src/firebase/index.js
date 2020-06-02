@@ -47,40 +47,43 @@ export const uploadFile = async (files = {}) => {
 
         // Upload files
         try {
-            console.log('#1', files[file] instanceof Blob);
+            console.log('#1', files[file] instanceof File);
             const task = await storageRef.put(files[file]);
+
+            let errorObj, completeFlag, url;
+
+            console.log('#2');
+
+            task.on('state_changed',
+                function progress(snapshot) {
+                    let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    console.log(percentage);
+                },
+                function error(err) {
+                    console.log(err);
+                    errorObj = err;
+                },
+                function complete() {
+                    url = task.snapshot.ref.getDownloadURL().then(function (downloadURL) {
+                        return downloadURL;
+                    })
+                    console.log('Upload complete');
+                    completeFlag = true;
+                }
+            );
+
+            fileUploadedArray.push({
+                errorObj: errorObj,
+                completeFlag: completeFlag,
+                storageRef: storageRef,
+                downloadURL: url,
+            });
+            
         } catch (e) {
             console.log("Error: ", e);
         }
 
-        let errorObj, completeFlag, url;
 
-        console.log('#2');
-
-        task.on('state_changed',
-            function progress(snapshot) {
-                let percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                console.log(percentage);
-            },
-            function error(err) {
-                console.log(err);
-                errorObj = err;
-            },
-            function complete() {
-                url = task.snapshot.ref.getDownloadURL().then(function (downloadURL) {
-                    return downloadURL;
-                })
-                console.log('Upload complete');
-                completeFlag = true;
-            }
-        );
-
-        fileUploadedArray.push({
-            errorObj: errorObj,
-            completeFlag: completeFlag,
-            storageRef: storageRef,
-            downloadURL: url,
-        })
     }
     /* const fileUploadedArray = files.map(async (file) => {
 
