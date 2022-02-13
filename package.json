@@ -33,7 +33,7 @@
   "dependencies": {
     "@babel/runtime": "^7.9.6",
     "@google-cloud/storage": "^4.7.0",
-    "ajv": "^6.10.2",
+    "ajv": "^6.12.3",
     "babel-cli": "^6.9.0",
     "babel-core": "^6.26.3",
     "babel-loader": "^8.1.0",
