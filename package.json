@@ -45,7 +45,7 @@
     "compression": "^1.5.2",
     "cors": "^2.7.1",
     "eslint": "^3.1.1",
-    "express": "^4.13.3",
+    "express": "^4.17.3",
     "express-async-handler": "^1.1.4",
     "firebase": "^7.14.2",
     "firebase-admin": "^8.11.0",
